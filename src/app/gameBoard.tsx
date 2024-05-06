@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { Board } from './Board'; 
 
-export default function GameBoard({ board, prevBoard, showNumbers }) {
+
+interface GameBoardProps {
+  board: Board;
+  prevBoard: Board;
+  showNumbers: boolean;
+}
+
+export default function GameBoard({ board, prevBoard, showNumbers }: GameBoardProps) {
   const [boardValues, setBoardValues] = useState(board.getBoard());
 
   useEffect(() => {
@@ -8,7 +16,8 @@ export default function GameBoard({ board, prevBoard, showNumbers }) {
     setBoardValues(board.getBoard());
   }, [board]);
 
-  const colorMap = {
+  // Specify types for colorMap and imageMap
+  const colorMap: { [key: number]: string } = {
     2: '#fce4ec',
     4: '#f8bbd0',
     8: '#f48fb1',
@@ -27,16 +36,16 @@ export default function GameBoard({ board, prevBoard, showNumbers }) {
     65536: '#e1bee7',
   };
 
-  const imageMap = {
+  const imageMap: { [key: number]: string } = {
     2: 'sonny_flower.png',
     4: 'sonny_konpeito.png',
     8: 'sonny_star.png',
     16: 'sonny_bunny.png',
     32: 'sonny_shortcake.png',
     64: 'sonny_strawberry.png',
-    128: 'sonny_clown.png',
+    128: 'sonny_shark.png',
     256: 'sonny_fawn.png',
-    512: 'sonny_shark.png',
+    512: 'sonny_hybrangea.png',
     1024: 'sonny_pancakes.png',
     2048: 'sonny_chef.png',
     4096: 'sonny_calico.png',
@@ -60,7 +69,7 @@ export default function GameBoard({ board, prevBoard, showNumbers }) {
             }}
           >
             {/* Conditionally render either the number or the image */}
-            {showNumbers ? (cell !== 0 ? cell : '\u00A0') : (cell !== 0 ? <img src={imageMap[cell]}/> : <img src="empty.png" />)}
+            {showNumbers ? (cell !== 0 ? cell : '\u00A0') : (cell !== 0 ? <img src={imageMap[cell]} alt={cell.toString()} /> : <img src="empty.png" alt="Empty" />)}
           </div>
         ))
       ))}

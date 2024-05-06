@@ -39,12 +39,9 @@ export default function Home() {
   const [board, setBoard] = React.useState(new Board());
   const [score, setScore] = React.useState(0);
   const [bestScore, setBestScore] = React.useState(() => {
-    // Retrieve best score from localStorage or default to 0 if localStorage is not available
-    if (typeof window !== 'undefined') {
-      const storedBestScore = localStorage.getItem("bestScore");
-      return storedBestScore ? parseInt(storedBestScore, 10) : 0;
-    }
-    return 0;
+    // Retrieve best score from localStorage or default to 0
+    const storedBestScore = localStorage.getItem("bestScore");
+    return storedBestScore ? parseInt(storedBestScore, 10) : 0;
   });
   const [prevBoard, setPrevBoard] = React.useState(new Board());
   const [isLost, setIsLost] = React.useState(false);
@@ -105,10 +102,7 @@ export default function Home() {
     if (score > bestScore) {
       setBestScore(score);
 
-      // Update localStorage if it's available
-      if (typeof window !== 'undefined') {
-        localStorage.setItem("bestScore", score.toString());
-      }
+      localStorage.setItem("bestScore", score.toString());
     }
   }, [score, bestScore]);
 

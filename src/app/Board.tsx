@@ -51,11 +51,16 @@ export class Board {
 }
 
 moveTiles(direction: string): void {
+  let moved = false;
   switch (direction) {
       case "up":
           for (let col = 0; col < 4; col++) {
               var curr_col = [this.board[0][col], this.board[1][col], this.board[2][col], this.board[3][col]];
               const new_col = this.mergeArray(curr_col);
+
+              if (!this.arraysEqual(this.board.map(row => row[col]), new_col)) {
+                moved = true;
+              }
 
               this.board[0][col] = new_col[0];
               this.board[1][col] = new_col[1];
@@ -68,6 +73,10 @@ moveTiles(direction: string): void {
               var curr_col = [this.board[3][col], this.board[2][col], this.board[1][col], this.board[0][col]];
               const new_col = this.mergeArray(curr_col);
 
+              if (!this.arraysEqual(this.board.map(row => row[col]), new_col)) {
+                moved = true;
+              }
+
               this.board[3][col] = new_col[0];
               this.board[2][col] = new_col[1];
               this.board[1][col] = new_col[2];
@@ -75,26 +84,67 @@ moveTiles(direction: string): void {
           }
           break;
       case "left":
-          for (let row = 0; row < 4; row++) {
-              var curr_row = this.board[row];
-              const new_row = this.mergeArray(curr_row);
-
-              this.board[row] = new_row;
-          }
-          break;
+        for (let row = 0; row < 4; row++) {
+            var curr_row = this.board[row];
+            const new_row = this.mergeArray(curr_row);
+    
+            if (!this.arraysEqual(this.board[row], new_row)) {
+                moved = true;
+            }
+    
+            this.board[row] = new_row;
+        }
+        break;
       case "right":
-          for (let row = 0; row < 4; row++) {
-              var curr_row = this.board[row];
-              const reversed_row = curr_row.reverse();
-              const new_row = this.mergeArray(reversed_row).reverse();
+        for (let row = 0; row < 4; row++) {
+            var curr_row = this.board[row];
+            const reversed_row = curr_row.slice().reverse(); // Create a copy of the row before reversing
+            const new_row = this.mergeArray(reversed_row).reverse();
+    
+            if (!this.arraysEqual(this.board[row], new_row)) {
+                moved = true;
+            }
+    
+            this.board[row] = new_row;
+        }
+        break;
+    }
 
-              this.board[row] = new_row;
-          }
-          break;
+    if (moved) {
+      this.generateNewTile();
     }
   }
 
   getBoard(): number[][] {
     return this.board;
+  }
+
+  arraysEqual(arr1: number[], arr2: number[]): boolean {
+    return JSON.stringify(arr1) === JSON.stringify(arr2);
+  }
+
+  
+  boardsEqual(otherBoard: Board): boolean {
+    return JSON.stringify(this.board) === JSON.stringify(otherBoard.board);
+  }
+
+  clone(): Board {
+    const clonedBoard = new Board();
+    // Deep copy the board array
+    clonedBoard.board = this.board.map(row => [...row]);
+    return clonedBoard;
+  } 
+
+  checkLoss(): boolean {
+    const moves = ["up", "down", "left", "right"];
+    for (const move of moves) {
+        const clonedBoard = this.clone();
+        clonedBoard.moveTiles(move);
+        if (!this.boardsEqual(clonedBoard)) {
+            return false;
+        }
+    }
+    
+    return true;
   }
 }

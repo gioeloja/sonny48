@@ -1,9 +1,11 @@
 export class Board {
   private board: number[][];
+  private score: number;
 
   constructor() {
     // initialize board
     this.board = Array.from({ length: 4 }, () => Array(4).fill(0));
+    this.score = 0;
   }
 
   generateNewTile(): void {
@@ -30,6 +32,7 @@ export class Board {
             if (arr[i] === arr[adjacent_i]) {
                 arr[adjacent_i] = 0;
                 arr[i] *= 2;
+                this.score += arr[i];
                 break;
             } else if (arr[adjacent_i] === 0) {
                 adjacent_i += 1;
@@ -98,7 +101,7 @@ moveTiles(direction: string): void {
       case "right":
         for (let row = 0; row < 4; row++) {
             var curr_row = this.board[row];
-            const reversed_row = curr_row.slice().reverse(); // Create a copy of the row before reversing
+            const reversed_row = curr_row.slice().reverse(); 
             const new_row = this.mergeArray(reversed_row).reverse();
     
             if (!this.arraysEqual(this.board[row], new_row)) {
@@ -119,6 +122,10 @@ moveTiles(direction: string): void {
     return this.board;
   }
 
+  getScore(): number {
+    return this.score;
+  }
+
   arraysEqual(arr1: number[], arr2: number[]): boolean {
     return JSON.stringify(arr1) === JSON.stringify(arr2);
   }
@@ -132,6 +139,7 @@ moveTiles(direction: string): void {
     const clonedBoard = new Board();
     // Deep copy the board array
     clonedBoard.board = this.board.map(row => [...row]);
+    clonedBoard.score = this.score
     return clonedBoard;
   } 
 

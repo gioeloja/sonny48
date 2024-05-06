@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function GameBoard({ board }) {
-  const boardValues = board.getBoard();
+export default function GameBoard({ board, prevBoard, showNumbers }) {
+  const [boardValues, setBoardValues] = useState(board.getBoard());
 
-  // Define a mapping between cell values and their corresponding colors
+  useEffect(() => {
+    // Update board values when the board prop changes
+    setBoardValues(board.getBoard());
+  }, [board]);
+
   const colorMap = {
     2: '#fce4ec',
     4: '#f8bbd0',
@@ -16,8 +20,30 @@ export default function GameBoard({ board }) {
     512: '#ad1457',
     1024: '#880e4f',
     2048: '#6a1b9a',
-    
-    // Add more values and colors as needed
+    4096: '#9c27b0',
+    8192: '#ab47bc',
+    16384: '#ba68c8',
+    32768: '#ce93d8',
+    65536: '#e1bee7',
+  };
+
+  const imageMap = {
+    2: 'sonny_flower.png',
+    4: 'sonny_konpeito.png',
+    8: 'sonny_star.png',
+    16: 'sonny_bunny.png',
+    32: 'sonny_shortcake.png',
+    64: 'sonny_strawberry.png',
+    128: 'sonny_clown.png',
+    256: 'sonny_fawn.png',
+    512: 'sonny_shark.png',
+    1024: 'sonny_pancakes.png',
+    2048: 'sonny_chef.png',
+    4096: 'sonny_calico.png',
+    8192: 'sonny_siamese.png',
+    16384: 'sonny_seoul.png',
+    32768: 'sonny_taxi.png',
+    65536: 'sonny_clown.png',
   };
 
   return (
@@ -27,9 +53,14 @@ export default function GameBoard({ board }) {
           <div
             key={`${rowIndex}-${colIndex}`}
             className="bg-[#e0b09c] font-bold text-[42px] rounded-md p-2 flex items-center justify-center"
-            style={{ backgroundColor: colorMap[cell], color: cell > 4 ? 'white' : '#776e65' }}
+            style={{
+              backgroundColor: colorMap[cell],
+              color: cell > 4 ? 'white' : '#776e65',
+              transition: 'background-color 0.3s ease-in-out',
+            }}
           >
-            {cell !== 0 ? cell : '\u00A0'}
+            {/* Conditionally render either the number or the image */}
+            {showNumbers ? (cell !== 0 ? cell : '\u00A0') : (cell !== 0 ? <img src={imageMap[cell]}/> : <img src="empty.png" />)}
           </div>
         ))
       ))}

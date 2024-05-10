@@ -12,6 +12,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ showNumbers }) => {
   
   useEffect(() => {
     start();
+    start();
 
     const handleKeyPress = (event: KeyboardEvent) => {
       switch (event.key) {

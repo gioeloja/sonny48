@@ -86,9 +86,9 @@ export default function GameProvider({ children }: PropsWithChildren) {
     }
 
     const resetGame = () => {
-        console.log("RESETTING")
         dispatch({ type: "reset_game" });
     }
+    
 
     return (
         <GameContext.Provider value={{ 

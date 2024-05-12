@@ -65,7 +65,7 @@ export default function GameProvider({ children }: PropsWithChildren) {
         
         // Set the value based on the random number
         let value: number;
-        if (randomNumber < 0.7) {
+        if (randomNumber < 0.8) {
             value = 2; // 70% chance of being 2
         } else {
             value = 4; // 30% chance of being 4

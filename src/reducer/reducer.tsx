@@ -406,15 +406,24 @@ export default function GameReducer(
       
         // get the value
         const randomNumber = Math.random();
-        let value: number;
+        const randomNumber2 = Math.random()
+        let value1: number;
+        let value2: number;
+
         if (randomNumber < 0.8) {
-            value = 2; // 70% chance of being 2
+            value1 = 2; // 70% chance of being 2
         } else {
-            value = 4; // 30% chance of being 4
+            value1 = 4; // 30% chance of being 4
+        }
+
+        if (randomNumber2 < 0.8) {
+          value2 = 2; // 70% chance of being 2
+        } else {
+          value2 = 4; // 30% chance of being 4
         }
       
         const tile1: TileSettings = { 
-          value, 
+          value: value1, 
           xcoordinate: row1, 
           ycoordinate: col1, 
           justSpawned: true, 
@@ -422,7 +431,7 @@ export default function GameReducer(
         };
       
         const tile2: TileSettings = { 
-          value, 
+          value: value2, 
           xcoordinate: row2, 
           ycoordinate: col2, 
           justSpawned: true, 

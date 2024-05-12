@@ -1,9 +1,9 @@
 'use client'
 import React, {useContext} from "react";
-import GameBoard from "../components/GameBoard";
 import GameProvider from "../interface/interface";
 import { GameContext } from "../interface/interface";
 import NewGameButton from "./NewGameButton";
+import GameBoard from "../components/GameBoard";
 import LosePopup from "./LosePopup";
 import Score from "./score";
 
@@ -27,10 +27,7 @@ export default function Home() {
             </div>
           </div>
           <div className="w-full h-[500px] relative">
-
               <GameBoard showNumbers={showNumbers} />
-
-
               <LosePopup/>
           </div>
           <div className="flex items-center mt-6 gap-1">

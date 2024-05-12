@@ -16,6 +16,7 @@ export const GameContext = createContext({
     generateRandomTile: () => {},
     start: () => {},
     resetGame: () => {},
+    isLost: false,
 });
 
 
@@ -98,6 +99,7 @@ export default function GameProvider({ children }: PropsWithChildren) {
             generateRandomTile,
             start,
             resetGame,
+            isLost: gameState.isLost,
         }}>
             {children}
         </GameContext.Provider>

@@ -8,24 +8,29 @@ interface GameBoardProps {
 }
 
 const GameBoard: React.FC<GameBoardProps> = ({ showNumbers }) => {
-  const { getTiles, moveTiles, generateRandomTile, start, score, resetGame } = useContext(GameContext);
+  const { getTiles, moveTiles, generateRandomTile, start, score, resetGame, isLost } = useContext(GameContext);
   
   useEffect(() => {
     start();
     start();
 
     const handleKeyPress = (event: KeyboardEvent) => {
+      event.preventDefault();
       switch (event.key) {
         case 'ArrowLeft':
+        case 'a':
           moveTiles('left');
           break;
         case 'ArrowRight':
+        case 'd':
           moveTiles('right');
           break;
         case 'ArrowUp':
+        case 'w':
           moveTiles('up');
           break;
         case 'ArrowDown':
+        case 's':
           moveTiles('down');
           break;
         default:
@@ -40,6 +45,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ showNumbers }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
+
   }, []);
 
   return (

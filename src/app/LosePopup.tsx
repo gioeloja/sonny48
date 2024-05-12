@@ -1,18 +1,19 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { GameContext } from "@/interface/interface";
 
 const LosePopup: React.FC = () => {
-    const { resetGame, start } = useContext(GameContext);
+    const { resetGame, start, isLost } = useContext(GameContext);
 
     const [isVisible, setIsVisible] = useState(false);
 
+    useEffect(() => {
+        setIsVisible(isLost);
+    }, [isLost]);
+
     const handleTryAgain = () => {
         resetGame();
-        start()
-        start()
     };
 
-    // Apply conditional style for opacity
     const popupStyle = {
         opacity: isVisible ? 1 : 0,
         transition: isVisible ? 'opacity 2s ease-in-out' : 'none', // Add transition only when isVisible is true
@@ -25,6 +26,7 @@ const LosePopup: React.FC = () => {
                 <button
                     className="bg-[#8b6d61] text-white font-bold py-2 px-4 rounded-lg"
                     onClickCapture={handleTryAgain}
+                    disabled={!isVisible}
                 >
                     Try again
                 </button>

@@ -6,8 +6,6 @@ const NewGameButton = () => {
 
   const handleNewGameClick = () => {
     resetGame();
-    start();
-    start();
   };
 
   return (

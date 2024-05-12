@@ -16,6 +16,7 @@ type State = {
   hasChanged: Set<string>; // Update the type to Set<number>
   score: number;
   boardChanged: boolean;
+  isLost: boolean;
 };
 
 type Action =
@@ -53,12 +54,38 @@ function boardsEqual(board1: string[][], board2: string[][]): boolean {
   return true;
 }
 
+function hasAdjacentNumbers(arr: number[][]) {
+  const rows = arr.length;
+  const cols = arr[0].length;
+
+  // Check horizontally
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols - 1; j++) {
+      if (arr[i][j] === arr[i][j + 1]) {
+        return true;
+      }
+    }
+  }
+
+  // Check vertically
+  for (let i = 0; i < rows - 1; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (arr[i][j] === arr[i + 1][j]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 export const initialState: State = {
   board: createBoard(),
   tiles: {},
   hasChanged: new Set<string>(),
   score: 0,
   boardChanged: false,
+  isLost: false,
 };
 
 export default function GameReducer(
@@ -73,6 +100,43 @@ export default function GameReducer(
       newBoard[action.tile.xcoordinate][action.tile.ycoordinate] = tileID;
       const updatedHasChanged = new Set(state.hasChanged); // Create a new set based on the existing one
       updatedHasChanged.add(tileID);
+
+      // Check if the board is completely full
+      let isBoardFull = true;
+      for (let i = 0; i < newBoard.length; i++) {
+        for (let j = 0; j < newBoard[i].length; j++) {
+          if (newBoard[i][j] === '0') {
+            isBoardFull = false;
+            break;
+          }
+        }
+        
+        // Create numeric representation of board
+        if (!isBoardFull) {
+          break
+        }
+      }
+
+      let newIsLost = false
+      if (isBoardFull) {
+      let numericBoard = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+        for (let i = 0; i < newBoard.length; i++) {
+          for (let j = 0; j < newBoard[i].length; j++) {
+            const currID = newBoard[i][j]
+            if (currID == tileID) {
+              numericBoard[i][j] = action.tile.value
+            }
+            else {
+              numericBoard[i][j] = state.tiles[currID].value
+            }
+          }
+        }
+        newIsLost = !hasAdjacentNumbers(numericBoard)
+      }
+
+          
+      
+
       return {
         ...state,
         board: newBoard,
@@ -82,6 +146,7 @@ export default function GameReducer(
         },
         hasChanged: updatedHasChanged,
         boardChanged: false,
+        isLost: newIsLost
       };
     case "remove_merged_tiles":
       const tilesSubset: { [id: string]: TileSettings } = {};
@@ -326,8 +391,59 @@ export default function GameReducer(
         hasChanged: newHasChangedDown,
         score,
       };
-    case "reset_game":
-      return initialState;
+      case "reset_game":
+        let row1, col1, row2, col2;
+      
+        // Generate random coordinates for the first tile
+        row1 = Math.floor(Math.random() * 4);
+        col1 = Math.floor(Math.random() * 4);
+        
+        // Generate random coordinates for the second tile, ensuring they are different
+        do {
+          row2 = Math.floor(Math.random() * 4);
+          col2 = Math.floor(Math.random() * 4);
+        } while (row1 === row2 && col1 === col2);
+      
+        // get the value
+        const randomNumber = Math.random();
+        let value: number;
+        if (randomNumber < 0.7) {
+            value = 2; // 70% chance of being 2
+        } else {
+            value = 4; // 30% chance of being 4
+        }
+      
+        const tile1: TileSettings = { 
+          value, 
+          xcoordinate: row1, 
+          ycoordinate: col1, 
+          justSpawned: true, 
+          hasChanged: false
+        };
+      
+        const tile2: TileSettings = { 
+          value, 
+          xcoordinate: row2, 
+          ycoordinate: col2, 
+          justSpawned: true, 
+          hasChanged: false
+        };
+        
+        const resetBoard = JSON.parse(JSON.stringify(initialState.board));
+        const resetTileID1 = uid();
+        const resetTileID2 = uid();
+        resetBoard[row1][col1] = resetTileID1;
+        resetBoard[row2][col2] = resetTileID2;
+      
+        return {
+          ...initialState,
+          board: resetBoard,
+          tiles: {
+            ...initialState.tiles,
+            [resetTileID1]: tile1,
+            [resetTileID2]: tile2,
+          },
+        };
     default:
       return state;
   }
